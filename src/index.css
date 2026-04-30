@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    --color-primary: #1a1a1a; /* Hitam Pekat */
+    --color-brand-blue: #294a70; /* Biru Muhiba */
+    --color-brand-yellow: #f4a024; /* Kuning Muhiba */
+    --color-canvas: #f8f8f8; /* Off-White Canvas */
+}
+
+@layer base {
+    body {
+        @apply bg-canvas text-primary antialiased selection:bg-brand-yellow selection:text-primary;
+    }
+}
+
+@layer components {
+    .text-huge {
+        @apply text-[12vw] leading-[0.8] font-[1000] tracking-[-0.08em] uppercase;
+    }
+
+    .kinetic-border {
+        @apply border-2 border-primary rounded-[2rem] p-8 transition-all duration-500 hover:bg-primary hover:text-canvas;
+    }
+}
