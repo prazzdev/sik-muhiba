@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom"; // Tambahkan ini
 import {
   Printer,
   ArrowLeft,
@@ -12,6 +13,7 @@ import {
 
 const ResultSection = ({ data, onBack }) => {
   const [showGrades, setShowGrades] = useState(true);
+  const navigate = useNavigate(); // Inisialisasi navigate
 
   // Pengelompokan kategori mapel berdasarkan data subjek dari relasi
   const kategoriMapel = [
@@ -19,6 +21,11 @@ const ResultSection = ({ data, onBack }) => {
     { title: "Mata Pelajaran Pilihan", key: "pilihan", color: "bg-purple-600" },
     { title: "Muatan Lokal", key: "mulok", color: "bg-amber-600" },
   ];
+
+  // Fungsi untuk mengarahkan ke halaman cetak dengan data siswa
+  const handlePrintSKL = () => {
+    navigate("/print-skl", { state: { studentData: data } });
+  };
 
   // Helper untuk memfilter grades berdasarkan category yang ada di dalam objek subjects
   const getGradesByCategory = (cat) =>
@@ -235,7 +242,7 @@ const ResultSection = ({ data, onBack }) => {
               <ArrowLeft size={16} /> Kembali ke Pencarian
             </button>
             <button
-              disabled
+              onClick={handlePrintSKL} // Mengaktifkan fungsi cetak
               className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 active:scale-95 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed transition-all"
             >
               <Printer size={16} /> Cetak SKL Resmi (PDF)
