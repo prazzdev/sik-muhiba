@@ -3,64 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "../lib/supabase";
 import CheckForm from "../components/CheckForm";
 import ResultSection from "../components/ResultSection";
+import CountdownSmall from "../components/CountdownSmall"; // Dipindah ke file terpisah
+import TransitionScreen from "../components/TransitionScreen"; // Komponen baru
 import { Clock, ShieldAlert, Info, ArrowLeft, Fingerprint } from "lucide-react";
 import { Link } from "react-router-dom";
-
-// KOMPONEN COUNTDOWN LENGKAP
-const CountdownSmall = ({ targetDate, onFinish }) => {
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    if (!targetDate) return;
-
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = new Date(targetDate).getTime() - now;
-      if (distance < 0) {
-        clearInterval(timer);
-        onFinish();
-      } else {
-        setTimeLeft({
-          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-          hours: Math.floor(
-            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-          ),
-          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-          seconds: Math.floor((distance % (1000 * 60)) / 1000),
-        });
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [targetDate, onFinish]);
-
-  return (
-    <div className="flex gap-2 justify-center lg:justify-start">
-      {[
-        { v: timeLeft.days, l: "Hari" },
-        { v: timeLeft.hours, l: "Jam" },
-        { v: timeLeft.minutes, l: "Menit" },
-        { v: timeLeft.seconds, l: "Detik" },
-      ].map((t, i) => (
-        <div
-          key={i}
-          className="flex flex-col items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-3 py-1 min-w-[60px]"
-        >
-          <span className="text-lg font-black text-white leading-none">
-            {t.v}
-          </span>
-          <span className="text-[10px] font-medium text-white/60 uppercase">
-            {t.l}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 const CheckPage = () => {
   const [studentData, setStudentData] = useState(null);
@@ -68,6 +14,8 @@ const CheckPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [targetDate, setTargetDate] = useState(null);
+  const [showTransition, setShowTransition] = useState(false);
+  const [finalResultVisible, setFinalResultVisible] = useState(false);
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -93,7 +41,18 @@ const CheckPage = () => {
     try {
       const { data, error: fetchError } = await supabase
         .from("students")
-        .select("*, student_grades(*)")
+        .select(
+          `
+            *,
+            student_grades (
+              score,
+              subjects (
+                name,
+                category
+              )
+            )
+          `,
+        ) // <--- PERBAIKAN DI SINI: Memanggil relasi subjects
         .eq("nisn", nisn)
         .eq("birth_date", birthDate)
         .single();
@@ -105,6 +64,12 @@ const CheckPage = () => {
         setStudentData(null);
       } else {
         setStudentData(data);
+        // Jika lulus, tampilkan transisi. Jika tidak, langsung tampilkan hasil.
+        if (data.is_graduated) {
+          setShowTransition(true);
+        } else {
+          setFinalResultVisible(true);
+        }
       }
     } catch (err) {
       setError("Gagal menghubungkan ke server.");
@@ -113,10 +78,16 @@ const CheckPage = () => {
     }
   };
 
+  const handleBack = () => {
+    setStudentData(null);
+    setFinalResultVisible(false);
+    setShowTransition(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col lg:flex-row font-sans">
-      {/* LEFT PANEL: Branding & Info - DIPAKSA 100VH PADA MOBILE */}
-      <div className="w-full h-screen lg:h-auto lg:w-[400px] bg-primary p-8 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0">
+      {/* LEFT PANEL */}
+      <div className="w-full min-h-screen lg:h-auto lg:w-[400px] bg-primary p-8 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0">
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-secondary/20 rounded-full blur-[100px]" />
 
         <div className="relative z-10">
@@ -156,7 +127,6 @@ const CheckPage = () => {
               SMA Muhammadiyah 1 Banjarnegara.
             </p>
 
-            {/* PETUNJUK SCROLL KHUSUS MOBILE */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -205,61 +175,27 @@ const CheckPage = () => {
         </div>
       </div>
 
-      {/* RIGHT PANEL: Form/Result - DIPAKSA 100VH PADA MOBILE */}
+      {/* RIGHT PANEL */}
       <main className="w-full min-h-screen lg:h-auto flex-1 flex flex-col items-center justify-center p-6 lg:p-12 relative bg-[#F8FAFC] overflow-y-auto">
         <div className="w-full max-w-xl py-8">
           <AnimatePresence mode="wait">
             {!isTimeUp ? (
-              <motion.div
-                key="waiting"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-center space-y-6"
-              >
-                <div className="w-20 h-20 bg-primary/5 rounded-[2rem] flex items-center justify-center mx-auto border-2 border-primary/10">
-                  <Clock size={40} className="text-primary animate-pulse" />
-                </div>
-                <h3 className="text-2xl font-black text-primary uppercase italic tracking-tighter">
-                  Akses Belum Dibuka
-                </h3>
-                <p className="text-slate-500 mt-2 font-medium">
-                  Halaman ini akan otomatis diperbarui saat waktu pengumuman
-                  tiba.
-                </p>
-              </motion.div>
-            ) : !studentData ? (
-              <motion.div
+              <RenderWaiting key="waiting" />
+            ) : showTransition ? (
+              <TransitionScreen
+                key="transition"
+                onComplete={() => {
+                  setShowTransition(false);
+                  setFinalResultVisible(true);
+                }}
+              />
+            ) : !finalResultVisible ? (
+              <RenderForm
                 key="form"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.04)] relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
-                  <Fingerprint size={120} />
-                </div>
-                <div className="mb-10 relative z-10 text-center lg:text-left">
-                  <h3 className="text-3xl font-[1000] text-primary uppercase tracking-tight">
-                    Masuk ke Sistem
-                  </h3>
-                  <p className="text-slate-400 text-sm font-medium mt-1">
-                    Gunakan kredensial resmi Anda.
-                  </p>
-                </div>
-                <div className="relative z-10">
-                  <CheckForm onSearch={handleSearchLogic} loading={loading} />
-                </div>
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="mt-8 p-4 bg-red-50 rounded-2xl border border-red-100 flex items-start gap-3 text-red-700 text-xs font-bold shadow-sm"
-                  >
-                    <ShieldAlert size={18} className="shrink-0 mt-0.5" />
-                    <span>{error}</span>
-                  </motion.div>
-                )}
-              </motion.div>
+                loading={loading}
+                error={error}
+                onSearch={handleSearchLogic}
+              />
             ) : (
               <motion.div
                 key="result"
@@ -267,10 +203,7 @@ const CheckPage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 className="w-full"
               >
-                <ResultSection
-                  data={studentData}
-                  onBack={() => setStudentData(null)}
-                />
+                <ResultSection data={studentData} onBack={handleBack} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -279,5 +212,58 @@ const CheckPage = () => {
     </div>
   );
 };
+
+// Helper Components untuk Modularitas
+const RenderWaiting = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    className="text-center space-y-6"
+  >
+    <div className="w-20 h-20 bg-primary/5 rounded-[2rem] flex items-center justify-center mx-auto border-2 border-primary/10">
+      <Clock size={40} className="text-primary animate-pulse" />
+    </div>
+    <h3 className="text-2xl font-black text-primary uppercase italic tracking-tighter">
+      Akses Belum Dibuka
+    </h3>
+    <p className="text-slate-500 mt-2 font-medium">
+      Halaman ini akan otomatis diperbarui saat waktu pengumuman tiba.
+    </p>
+  </motion.div>
+);
+
+const RenderForm = ({ loading, error, onSearch }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.98 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.04)] relative overflow-hidden"
+  >
+    <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
+      <Fingerprint size={120} />
+    </div>
+    <div className="mb-10 relative z-10 text-center lg:text-left">
+      <h3 className="text-3xl font-[1000] text-primary uppercase tracking-tight">
+        Cek Hasil Kelulusan
+      </h3>
+      <p className="text-slate-400 text-sm font-medium mt-1">
+        Gunakan identitas resmi kamu.
+      </p>
+    </div>
+    <div className="relative z-10">
+      <CheckForm onSearch={onSearch} loading={loading} />
+    </div>
+    {error && (
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: "auto" }}
+        className="mt-8 p-4 bg-red-50 rounded-2xl border border-red-100 flex items-start gap-3 text-red-700 text-xs font-bold shadow-sm"
+      >
+        <ShieldAlert size={18} className="shrink-0 mt-0.5" />
+        <span>{error}</span>
+      </motion.div>
+    )}
+  </motion.div>
+);
 
 export default CheckPage;

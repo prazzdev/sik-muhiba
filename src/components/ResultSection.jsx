@@ -8,27 +8,28 @@ import {
   User,
   Eye,
   EyeOff,
-  ChevronDown,
 } from "lucide-react";
 
 const ResultSection = ({ data, onBack }) => {
   const [showGrades, setShowGrades] = useState(true);
 
-  // Pengelompokan kategori mapel
+  // Pengelompokan kategori mapel berdasarkan data subjek dari relasi
   const kategoriMapel = [
     { title: "Mata Pelajaran Wajib", key: "wajib", color: "bg-blue-600" },
     { title: "Mata Pelajaran Pilihan", key: "pilihan", color: "bg-purple-600" },
     { title: "Muatan Lokal", key: "mulok", color: "bg-amber-600" },
   ];
 
+  // Helper untuk memfilter grades berdasarkan category yang ada di dalam objek subjects
   const getGradesByCategory = (cat) =>
-    data.student_grades?.filter((g) => g.category === cat) || [];
+    data.student_grades?.filter((g) => g.subjects?.category === cat) || [];
 
+  // Hitung rata-rata dari seluruh student_grades
   const allGrades = data.student_grades || [];
   const average =
     allGrades.length > 0
       ? (
-          allGrades.reduce((acc, curr) => acc + curr.score, 0) /
+          allGrades.reduce((acc, curr) => acc + Number(curr.score), 0) /
           allGrades.length
         ).toFixed(2)
       : 0;
@@ -37,18 +38,18 @@ const ResultSection = ({ data, onBack }) => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-4xl mx-auto space-y-6 pb-20"
+      className="w-full max-w-4xl mx-auto space-y-6 pb-20 px-4 md:px-0"
     >
       {/* CARD BIODATA & STATUS */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-10 shadow-sm">
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           {/* PAS FOTO 4x6 */}
           <div className="shrink-0">
-            <div className="w-[120px] h-[180px] md:w-[140px] md:h-[210px] bg-slate-100 border-2 border-slate-200 rounded-xl overflow-hidden flex items-center justify-center relative">
+            <div className="w-[120px] h-[180px] md:w-[140px] md:h-[210px] bg-slate-100 border-2 border-slate-200 rounded-xl overflow-hidden flex items-center justify-center relative shadow-inner">
               {data.photo_url ? (
                 <img
                   src={data.photo_url}
-                  alt="Foto"
+                  alt="Foto Siswa"
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -66,7 +67,7 @@ const ResultSection = ({ data, onBack }) => {
           <div className="flex-1 flex flex-col md:flex-row justify-between w-full gap-6">
             <div className="text-center md:text-left space-y-4">
               <div>
-                <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 leading-tight uppercase">
+                <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 leading-tight uppercase tracking-tighter">
                   {data.full_name}
                 </h2>
                 <p className="text-blue-600 font-bold text-sm tracking-wide">
@@ -76,16 +77,19 @@ const ResultSection = ({ data, onBack }) => {
 
               <div className="grid grid-cols-1 gap-2 text-sm text-slate-500 font-medium">
                 <p>
-                  NISN: <span className="text-slate-900">{data.nisn}</span>
+                  NISN:{" "}
+                  <span className="text-slate-900 font-bold">{data.nisn}</span>
                 </p>
                 <p>
-                  NOMOR UJIAN:{" "}
-                  <span className="text-slate-900">{data.exam_number}</span>
+                  NOMOR SURAT:{" "}
+                  <span className="text-slate-900 font-bold">
+                    {data.sk_sequence || "-"}
+                  </span>
                 </p>
                 <p>
-                  TEMPAT, TGL LAHIR:{" "}
-                  <span className="text-slate-900 uppercase">
-                    {data.birth_place}, {data.birth_date}
+                  TEMPAT, TGL LAHIR:
+                  <span className="text-slate-900 font-bold uppercase ml-1">
+                    {data.birth_place || "-"}, {data.birth_date || "-"}
                   </span>
                 </p>
               </div>
@@ -93,7 +97,7 @@ const ResultSection = ({ data, onBack }) => {
 
             {/* STATUS BADGE */}
             <div
-              className={`px-6 py-6 rounded-2xl border-2 flex flex-col items-center justify-center min-w-[180px] h-fit ${
+              className={`px-6 py-6 rounded-2xl border-2 flex flex-col items-center justify-center min-w-[180px] h-fit self-center md:self-start ${
                 data.is_graduated
                   ? "bg-green-50 border-green-200 text-green-700"
                   : "bg-red-50 border-red-200 text-red-700"
@@ -101,15 +105,15 @@ const ResultSection = ({ data, onBack }) => {
             >
               {data.is_graduated ? (
                 <>
-                  <CheckCircle2 size={40} className="mb-2" />
-                  <span className="font-black text-xl tracking-tighter">
+                  <CheckCircle2 size={40} className="mb-2 text-green-500" />
+                  <span className="font-black text-xl tracking-tighter uppercase">
                     LULUS
                   </span>
                 </>
               ) : (
                 <>
-                  <XCircle size={40} className="mb-2" />
-                  <span className="font-black text-xl tracking-tighter">
+                  <XCircle size={40} className="mb-2 text-red-500" />
+                  <span className="font-black text-xl tracking-tighter uppercase">
                     TIDAK LULUS
                   </span>
                 </>
@@ -121,7 +125,7 @@ const ResultSection = ({ data, onBack }) => {
 
       {/* TRANSKRIP NILAI DENGAN TOGGLE */}
       <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-        <div className="bg-slate-50 px-8 py-5 border-b border-slate-200 flex justify-between items-center">
+        <div className="bg-slate-50 px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <h3 className="font-bold text-slate-800 text-xs uppercase tracking-widest">
               Transkrip Nilai Akademik
@@ -134,8 +138,8 @@ const ResultSection = ({ data, onBack }) => {
               {showGrades ? "Sembunyikan Nilai" : "Tampilkan Nilai"}
             </button>
           </div>
-          <span className="hidden md:block text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            SIK-MUHIBA OFFICIAL
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            KLS: {data.class_name} | SIK-MUHIBA OFFICIAL
           </span>
         </div>
 
@@ -155,7 +159,9 @@ const ResultSection = ({ data, onBack }) => {
                   return (
                     <div key={cat.key} className="space-y-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-1 h-5 ${cat.color} rounded-full`} />
+                        <div
+                          className={`w-1.5 h-5 ${cat.color} rounded-full`}
+                        />
                         <h4 className="font-black text-slate-800 text-sm uppercase tracking-tighter">
                           {cat.title}
                         </h4>
@@ -164,12 +170,12 @@ const ResultSection = ({ data, onBack }) => {
                         {items.map((item, idx) => (
                           <div
                             key={idx}
-                            className="flex justify-between items-center py-2 border-b border-slate-50"
+                            className="flex justify-between items-center py-2.5 border-b border-slate-50 hover:bg-slate-50/50 px-2 rounded-lg transition-colors"
                           >
-                            <span className="text-slate-600 text-sm font-medium uppercase">
-                              {item.subject_name}
+                            <span className="text-slate-600 text-sm font-medium uppercase tracking-tight">
+                              {item.subjects?.name}
                             </span>
-                            <span className="font-mono font-bold text-slate-900 bg-slate-100 px-3 py-0.5 rounded text-sm">
+                            <span className="font-mono font-black text-slate-900 bg-slate-100 px-3 py-1 rounded-md text-sm">
                               {item.score}
                             </span>
                           </div>
@@ -180,11 +186,16 @@ const ResultSection = ({ data, onBack }) => {
                 })}
 
                 {/* TOTAL RATA-RATA */}
-                <div className="bg-slate-900 rounded-2xl p-6 flex justify-between items-center mt-6">
-                  <p className="text-white font-bold text-xs uppercase tracking-[0.2em]">
-                    Rata-Rata Nilai Akhir
-                  </p>
-                  <span className="text-3xl font-black text-yellow-400 tracking-tighter">
+                <div className="bg-slate-900 rounded-2xl p-6 flex justify-between items-center mt-6 shadow-xl border border-slate-800">
+                  <div className="flex flex-col">
+                    <p className="text-white font-bold text-xs uppercase tracking-[0.2em]">
+                      Rata-Rata Nilai Akhir
+                    </p>
+                    <span className="text-[10px] text-slate-400 uppercase font-medium">
+                      Berdasarkan seluruh mata pelajaran
+                    </span>
+                  </div>
+                  <span className="text-4xl font-black text-yellow-400 tracking-tighter">
                     {average}
                   </span>
                 </div>
@@ -192,14 +203,25 @@ const ResultSection = ({ data, onBack }) => {
             ) : (
               <motion.div
                 key="hidden"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="py-20 flex flex-col items-center justify-center text-slate-400 space-y-3"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="py-20 flex flex-col items-center justify-center text-slate-400 space-y-4"
               >
-                <EyeOff size={48} strokeWidth={1} />
-                <p className="text-sm font-medium uppercase tracking-widest">
-                  Nilai sedang disembunyikan
-                </p>
+                <div className="p-5 bg-slate-50 rounded-full">
+                  <EyeOff
+                    size={48}
+                    strokeWidth={1}
+                    className="text-slate-300"
+                  />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-bold uppercase tracking-widest text-slate-500">
+                    Nilai sedang disembunyikan
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1 font-medium">
+                    Klik tombol "Tampilkan Nilai" untuk melihat detail
+                  </p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -208,19 +230,23 @@ const ResultSection = ({ data, onBack }) => {
           <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-100">
             <button
               onClick={onBack}
-              className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-slate-200 text-slate-600 font-bold text-xs uppercase tracking-widest hover:bg-slate-50 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-slate-200 text-slate-600 font-bold text-xs uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all"
             >
-              <ArrowLeft size={16} /> Kembali
+              <ArrowLeft size={16} /> Kembali ke Pencarian
             </button>
             <button
               disabled
-              className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 active:scale-95 disabled:bg-slate-300 disabled:shadow-none"
+              className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 active:scale-95 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed transition-all"
             >
               <Printer size={16} /> Cetak SKL Resmi (PDF)
             </button>
           </div>
         </div>
       </div>
+
+      <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+        SMA MUHAMMADIYAH 1 BANJARNEGARA © 2026 - LOKANALA DIGIBARA
+      </p>
     </motion.div>
   );
 };
