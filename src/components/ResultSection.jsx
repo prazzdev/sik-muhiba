@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom"; // Tambahkan ini
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert2
 import {
   Printer,
   ArrowLeft,
@@ -13,7 +14,7 @@ import {
 
 const ResultSection = ({ data, onBack }) => {
   const [showGrades, setShowGrades] = useState(true);
-  const navigate = useNavigate(); // Inisialisasi navigate
+  const navigate = useNavigate();
 
   // Fungsi helper untuk memformat tanggal lahir menjadi deskriptif
   const formatBirthDate = (dateString) => {
@@ -33,9 +34,24 @@ const ResultSection = ({ data, onBack }) => {
     { title: "Muatan Lokal", key: "mulok", color: "bg-amber-600" },
   ];
 
-  // Fungsi untuk mengarahkan ke halaman cetak dengan data siswa
+  // Fungsi untuk menangani klik tombol cetak
   const handlePrintSKL = () => {
-    navigate("/print-skl", { state: { studentData: data } });
+    // Fungsi navigasi sebelumnya dikomentari:
+    // navigate("/print-skl", { state: { studentData: data } });
+
+    // Tampilan Alert yang lebih bagus menggunakan SweetAlert2
+    Swal.fire({
+      title: "Akses Belum Dibuka",
+      text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
+      icon: "info",
+      confirmButtonText: "Mengerti",
+      confirmButtonColor: "#1e293b", // Sesuaikan dengan warna primary kamu (slate-900)
+      customClass: {
+        popup: "rounded-[2rem]",
+        confirmButton:
+          "rounded-xl px-10 py-3 text-xs uppercase tracking-widest font-black",
+      },
+    });
   };
 
   // Helper untuk memfilter grades berdasarkan category yang ada di dalam objek subjects
@@ -98,12 +114,6 @@ const ResultSection = ({ data, onBack }) => {
                   NISN:{" "}
                   <span className="text-slate-900 font-bold">{data.nisn}</span>
                 </p>
-                {/* <p>
-                  NOMOR SURAT:{" "}
-                  <span className="text-slate-900 font-bold">
-                    {data.sk_sequence || "-"}
-                  </span>
-                </p>*/}
                 <p>
                   TEMPAT, TGL LAHIR:
                   <span className="text-slate-900 font-bold uppercase ml-1">
@@ -144,7 +154,7 @@ const ResultSection = ({ data, onBack }) => {
 
       {/* TRANSKRIP NILAI DENGAN TOGGLE */}
       <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-        <div className="bg-slate-50 px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* <div className="bg-slate-50 px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <h3 className="font-bold text-slate-800 text-xs uppercase tracking-widest">
               Transkrip Nilai Akademik
@@ -160,10 +170,10 @@ const ResultSection = ({ data, onBack }) => {
           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             KLS: {data.class_name} | SIK-MUHIBA OFFICIAL
           </span>
-        </div>
+        </div>*/}
 
         <div className="p-4 md:p-8 space-y-10">
-          <AnimatePresence mode="wait">
+          {/* <AnimatePresence mode="wait">
             {showGrades ? (
               <motion.div
                 key="visible"
@@ -204,14 +214,13 @@ const ResultSection = ({ data, onBack }) => {
                   );
                 })}
 
-                {/* TOTAL RATA-RATA */}
                 <div className="bg-slate-900 rounded-2xl p-6 flex justify-between items-center mt-6 shadow-xl border border-slate-800">
                   <div className="flex flex-col">
                     <p className="text-white font-bold text-xs uppercase tracking-[0.2em]">
                       Rata-Rata Nilai Akhir
                     </p>
                     <span className="text-[10px] text-slate-400 uppercase font-medium">
-                      Berdasarkan seluruh mata pelajaran
+                      Berbasis seluruh mata pelajaran
                     </span>
                   </div>
                   <span className="text-4xl font-black text-yellow-400 tracking-tighter">
@@ -243,7 +252,7 @@ const ResultSection = ({ data, onBack }) => {
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>
+          </AnimatePresence>*/}
 
           {/* ACTION BUTTONS */}
           <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-100">
@@ -254,8 +263,8 @@ const ResultSection = ({ data, onBack }) => {
               <ArrowLeft size={16} /> Kembali ke Pencarian
             </button>
             <button
-              onClick={handlePrintSKL} // Mengaktifkan fungsi cetak
-              className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 active:scale-95 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed transition-all"
+              onClick={handlePrintSKL}
+              className="flex-1 flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-slate-200 active:scale-95 transition-all"
             >
               <Printer size={16} /> Cetak SKL Resmi (PDF)
             </button>
@@ -264,7 +273,7 @@ const ResultSection = ({ data, onBack }) => {
       </div>
 
       <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-        SMA MUHAMMADIYAH 1 BANJARNEGARA © 2026 - LOKANALA DIGIBARA
+        SMA MUHAMMADIYAH 1 BANJARNEGARA © 2026
       </p>
     </motion.div>
   );
