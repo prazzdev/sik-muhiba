@@ -30,7 +30,7 @@ const CheckForm = ({ onSearch, loading }) => {
               placeholder="Contoh: 0012345678"
               value={nisn}
               onChange={(e) => setNisn(e.target.value)}
-              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold placeholder:text-slate-300 focus:bg-white focus:border-primary focus:ring-0 transition-all outline-none"
+              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-primary focus:ring-0 transition-all outline-none"
             />
           </div>
         </div>
@@ -49,7 +49,7 @@ const CheckForm = ({ onSearch, loading }) => {
               required
               value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
-              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold focus:bg-white focus:border-primary focus:ring-0 transition-all outline-none"
+              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-0 transition-all outline-none"
             />
           </div>
         </div>

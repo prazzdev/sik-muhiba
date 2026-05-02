@@ -15,6 +15,17 @@ const ResultSection = ({ data, onBack }) => {
   const [showGrades, setShowGrades] = useState(true);
   const navigate = useNavigate(); // Inisialisasi navigate
 
+  // Fungsi helper untuk memformat tanggal lahir menjadi deskriptif
+  const formatBirthDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  };
+
   // Pengelompokan kategori mapel berdasarkan data subjek dari relasi
   const kategoriMapel = [
     { title: "Mata Pelajaran Wajib", key: "wajib", color: "bg-blue-600" },
@@ -87,16 +98,17 @@ const ResultSection = ({ data, onBack }) => {
                   NISN:{" "}
                   <span className="text-slate-900 font-bold">{data.nisn}</span>
                 </p>
-                <p>
+                {/* <p>
                   NOMOR SURAT:{" "}
                   <span className="text-slate-900 font-bold">
                     {data.sk_sequence || "-"}
                   </span>
-                </p>
+                </p>*/}
                 <p>
                   TEMPAT, TGL LAHIR:
                   <span className="text-slate-900 font-bold uppercase ml-1">
-                    {data.birth_place || "-"}, {data.birth_date || "-"}
+                    {data.birth_place || "-"},{" "}
+                    {formatBirthDate(data.birth_date)}
                   </span>
                 </p>
               </div>
