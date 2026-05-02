@@ -357,10 +357,10 @@ const LandingPage = () => {
             100% { transform: translateX(0); }
           }
           .animate-marquee {
-            animation: marquee 60s linear infinite;
+            animation: marquee 200s linear infinite;
           }
           .animate-marquee-reverse {
-            animation: marquee-reverse 65s linear infinite;
+            animation: marquee-reverse 210s linear infinite;
           }
           .no-scrollbar::-webkit-scrollbar {
             display: none;
