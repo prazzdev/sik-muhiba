@@ -386,10 +386,10 @@ const LandingPage = () => {
           </h4>
           <div className="flex flex-col md:text-right gap-4">
             <p className="text-xs font-black tracking-widest opacity-30">
-              DEVELOPED_BY
+              DEVELOPED BY
             </p>
             <p className="text-sm font-black uppercase tracking-tighter">
-              MIMIN_GANTENK_MAXIMAL
+              LOKANALA DIGIBARA
             </p>
             {/* <div className="flex md:justify-end gap-4 mt-4">
               <div className="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center hover:bg-brand-yellow transition-all cursor-pointer">
