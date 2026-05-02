@@ -80,24 +80,22 @@ const LandingPage = () => {
 
   useEffect(() => {
     const fetchStudentPhotos = async () => {
-      // Baris 1: Kelas XII-1, Abjad A-Z
-      const { data: row1 } = await supabase
+      // Baris 1: SELURUH SISWA (Semua Kelas), Abjad A-Z
+      const { data: allRow1 } = await supabase
         .from("students")
         .select("photo_url, full_name")
-        .eq("class_name", "XII-1")
-        .not("photo_url", "is", null) // Hanya ambil yang ada fotonya
+        .not("photo_url", "is", null)
         .order("full_name", { ascending: true });
 
-      // Baris 2: Kelas XII-4, Abjad Z-A
-      const { data: row2 } = await supabase
+      // Baris 2: SELURUH SISWA (Semua Kelas), Abjad Z-A
+      const { data: allRow2 } = await supabase
         .from("students")
         .select("photo_url, full_name")
-        .eq("class_name", "XII-4")
         .not("photo_url", "is", null)
         .order("full_name", { ascending: false });
 
-      if (row1) setPhotosRow1(row1);
-      if (row2) setPhotosRow2(row2);
+      if (allRow1) setPhotosRow1(allRow1);
+      if (allRow2) setPhotosRow2(allRow2);
     };
 
     fetchStudentPhotos();
