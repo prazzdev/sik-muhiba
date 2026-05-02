@@ -106,14 +106,14 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen relative bg-canvas px-6 md:px-12 pb-24 text-primary font-sans">
       {/* NAVIGATION */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 h-24 flex items-center justify-between pointer-events-none">
+      <nav className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 h-24 flex items-center justify-between pointer-events-none">
         <img
           src="https://www.smamuh1bara.sch.id/images/muhiba-logo.webp"
-          className="w-12 h-12 pointer-events-auto"
+          className="w-10 h-10 md:w-12 md:h-12 pointer-events-auto object-contain"
           alt="Logo Muhiba"
         />
         <Link to="/cek" className="pointer-events-auto">
-          <button className="bg-primary text-canvas px-8 py-3 rounded-full font-black text-xs uppercase tracking-widest hover:bg-brand-yellow hover:text-primary transition-all border-2 border-primary">
+          <button className="bg-primary text-canvas px-5 md:px-8 py-2.5 md:py-3 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-brand-yellow hover:text-primary transition-all border-2 border-primary whitespace-nowrap">
             CEK KELULUSAN
           </button>
         </Link>
@@ -225,48 +225,44 @@ const LandingPage = () => {
           className="w-full h-full object-cover grayscales opacity-60 hover:grayscale-0 transition-all duration-1000"
           alt="Kampus Muhiba Banjarnegara"
         />
-        <div className="absolute bottom-10 left-10">
-          <span className="bg-canvas text-primary px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest border border-primary">
+        <div className="absolute bottom-6 min-md:bottom-10 left-6 min-md:left-10">
+          <span className="bg-canvas text-primary px-6 py-4 rounded-full font-black text-[10px] uppercase tracking-widest border border-primary leading-relaxed inline-block text-center max-w-[280px] md:max-w-none">
             LOC: GEDTUTA OF MUHIBA ~ OUR BELOVED HOME
           </span>
         </div>
       </section>
 
       {/* KINETIC DUAL-ROW AUTO-SLIDE GALLERY - FULL COLOR */}
-      <section className="mb-40 relative group px-6 md:px-12">
-        <div className="flex justify-between items-end mb-10">
+      <section className="mb-40 relative group px-4 md:px-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
           <div className="space-y-2">
-            <h2 className="text-xs font-black tracking-[0.5em] opacity-40 uppercase flex items-center gap-2">
+            <h2 className="text-[10px] md:text-xs font-black tracking-[0.3em] md:tracking-[0.5em] opacity-40 uppercase flex items-center gap-2">
               <Asterisk
                 size={14}
                 className="animate-spin-slow text-brand-blue"
               />{" "}
               Student_Archive_2026
             </h2>
-            <p className="text-3xl font-[1000] tracking-tighter uppercase italic">
+            <p className="text-2xl md:text-3xl font-[1000] tracking-tighter uppercase italic leading-none">
               Class Memories.
             </p>
           </div>
 
-          {/* Navigation Arrows (Ghost Style) */}
-          <div className="flex gap-4">
+          {/* Navigation Arrows */}
+          <div className="flex gap-3 md:gap-4 self-end md:self-auto">
             <button
               onClick={() => {
                 const row1 = document.getElementById("marquee-row-1");
                 const row2 = document.getElementById("marquee-row-2");
                 [row1, row2].forEach((el) => {
-                  el.style.animationPlayState = "paused";
+                  if (!el) return;
                   el.parentElement.scrollBy({ left: -400, behavior: "smooth" });
-                  setTimeout(
-                    () => (el.style.animationPlayState = "running"),
-                    2000,
-                  );
                 });
               }}
-              className="w-14 h-14 rounded-full border-2 border-primary/10 flex items-center justify-center hover:bg-brand-yellow hover:border-primary transition-all active:scale-90 backdrop-blur-sm shadow-sm"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-primary/10 flex items-center justify-center hover:bg-brand-yellow hover:border-primary transition-all active:scale-90 backdrop-blur-sm shadow-sm"
             >
               <ArrowRight
-                size={24}
+                size={20}
                 className="rotate-180 opacity-40 group-hover:opacity-100 text-primary"
               />
             </button>
@@ -275,18 +271,14 @@ const LandingPage = () => {
                 const row1 = document.getElementById("marquee-row-1");
                 const row2 = document.getElementById("marquee-row-2");
                 [row1, row2].forEach((el) => {
-                  el.style.animationPlayState = "paused";
+                  if (!el) return;
                   el.parentElement.scrollBy({ left: 400, behavior: "smooth" });
-                  setTimeout(
-                    () => (el.style.animationPlayState = "running"),
-                    2000,
-                  );
                 });
               }}
-              className="w-14 h-14 rounded-full border-2 border-primary/10 flex items-center justify-center hover:bg-brand-yellow hover:border-primary transition-all active:scale-90 backdrop-blur-sm shadow-sm"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-primary/10 flex items-center justify-center hover:bg-brand-yellow hover:border-primary transition-all active:scale-90 backdrop-blur-sm shadow-sm"
             >
               <ArrowRight
-                size={24}
+                size={20}
                 className="opacity-40 group-hover:opacity-100 text-primary"
               />
             </button>
@@ -295,13 +287,12 @@ const LandingPage = () => {
 
         <div className="flex flex-col gap-8">
           {/* Baris 1: Bergerak ke Kiri */}
-          <div className="overflow-x-auto no-scrollbar flex">
+          <div className="overflow-x-scroll no-scrollbar flex cursor-grab active:cursor-grabbing select-none">
             <div
               id="marquee-row-1"
-              className="flex whitespace-nowrap gap-6 animate-marquee hover:[animation-play-state:paused]"
+              className="flex whitespace-nowrap gap-6 animate-marquee hover:[animation-play-state:paused] active:[animation-play-state:paused]"
             >
               {photosRow1.length > 0 ? (
-                // Render data asli + duplicate untuk seamless loop
                 [...photosRow1, ...photosRow1].map((student, i) => (
                   <div
                     key={i}
@@ -309,18 +300,16 @@ const LandingPage = () => {
                   >
                     <img
                       src={
-                        student.photo_url !== null
-                          ? student.photo_url
-                          : "https://api.dicebear.com/7.x/initials/svg?seed=NamaSiswa"
+                        student.photo_url ||
+                        `https://api.dicebear.com/7.x/initials/svg?seed=${student.full_name}`
                       }
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover pointer-events-none"
                       alt={student.full_name}
-                      loading="lazy" // Teknik render hanya saat muncul di layar
+                      loading="lazy"
                     />
                   </div>
                 ))
               ) : (
-                // Placeholder loading jika data belum muncul
                 <div className="h-40 flex items-center px-10 font-black opacity-10 italic uppercase">
                   Loading_Archive_Row_1...
                 </div>
@@ -329,10 +318,10 @@ const LandingPage = () => {
           </div>
 
           {/* Baris 2: Bergerak ke Kanan (Reverse) */}
-          <div className="overflow-x-auto no-scrollbar flex ml-12">
+          <div className="overflow-x-scroll no-scrollbar flex md:ml-12 cursor-grab active:cursor-grabbing select-none">
             <div
               id="marquee-row-2"
-              className="flex whitespace-nowrap gap-6 animate-marquee-reverse hover:[animation-play-state:paused]"
+              className="flex whitespace-nowrap gap-6 animate-marquee-reverse hover:[animation-play-state:paused] active:[animation-play-state:paused]"
             >
               {photosRow2.length > 0 ? (
                 [...photosRow2, ...photosRow2].map((student, i) => (
@@ -342,11 +331,10 @@ const LandingPage = () => {
                   >
                     <img
                       src={
-                        student.photo_url
-                          ? student.photo_url
-                          : "https://api.dicebear.com/7.x/initials/svg?seed=NamaSiswa"
+                        student.photo_url ||
+                        `https://api.dicebear.com/7.x/initials/svg?seed=${student.full_name}`
                       }
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover pointer-events-none"
                       alt={student.full_name}
                       loading="lazy"
                     />
@@ -382,6 +370,7 @@ const LandingPage = () => {
           .no-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
+            scroll-behavior: smooth;
           }
         `}</style>
       </section>
