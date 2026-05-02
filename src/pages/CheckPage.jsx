@@ -169,7 +169,14 @@ const CheckPage = () => {
           <div className="flex items-center gap-3 text-white/50">
             <Info size={16} />
             <p className="text-[10px] font-medium leading-relaxed">
-              Mengalami kendala? Hubungi IT Support Sekolah.
+              Mengalami kendala? Hubungi IT Support Sekolah.{" "}
+              <a
+                href="https://wa.me/6287804069450?text=Saya%20mengalami%20kendala%20pada%20aplikasi%20SIK-Muhiba"
+                target="_blank"
+                className="text-white/50 underline"
+              >
+                Klik di sini
+              </a>
             </p>
           </div>
         </div>

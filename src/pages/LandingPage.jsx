@@ -374,18 +374,25 @@ const LandingPage = () => {
       </section>
 
       {/* THE BRUTAL FOOTER */}
-      <footer className="border-t-4 border-primary pt-12 flex flex-col gap-24">
+      <footer className="border-t-4 border-primary pt-12 flex flex-col gap-10">
         <div className="flex flex-col md:flex-row justify-between gap-12">
           <h4 className="text-huge text-slate-200 pointer-events-none opacity-40 uppercase">
             MUHIBA.
           </h4>
-          <div className="flex flex-col md:text-right gap-4">
+          <div className="flex flex-col md:text-right gap-2">
             <p className="text-xs font-black tracking-widest opacity-30">
               DEVELOPED BY
             </p>
-            <p className="text-sm font-black uppercase tracking-tighter">
+            <p className="text-sm font-bold text-gray-600 uppercase tracking-tighter">
               LOKANALA DIGIBARA
             </p>
+            <a
+              href="https://prazz.id"
+              target="_blank"
+              className="text-sm font-bold text-gray-600 uppercase tracking-tighter"
+            >
+              PRAZZ.ID
+            </a>
             {/* <div className="flex md:justify-end gap-4 mt-4">
               <div className="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center hover:bg-brand-yellow transition-all cursor-pointer">
                 <Globe size={18} />
