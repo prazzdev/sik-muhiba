@@ -63,6 +63,8 @@ const CountdownKinetic = ({ targetDate }) => {
 
 const LandingPage = () => {
   const [targetDate, setTargetDate] = useState(null);
+  const [photosRow1, setPhotosRow1] = useState([]);
+  const [photosRow2, setPhotosRow2] = useState([]);
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -74,6 +76,31 @@ const LandingPage = () => {
       if (data && !error) setTargetDate(data.value);
     };
     fetchConfig();
+  }, []);
+
+  useEffect(() => {
+    const fetchStudentPhotos = async () => {
+      // Baris 1: Kelas XII-1, Abjad A-Z
+      const { data: row1 } = await supabase
+        .from("students")
+        .select("photo_url, full_name")
+        .eq("class_name", "XII-1")
+        .not("photo_url", "is", null) // Hanya ambil yang ada fotonya
+        .order("full_name", { ascending: true });
+
+      // Baris 2: Kelas XII-4, Abjad Z-A
+      const { data: row2 } = await supabase
+        .from("students")
+        .select("photo_url, full_name")
+        .eq("class_name", "XII-4")
+        .not("photo_url", "is", null)
+        .order("full_name", { ascending: false });
+
+      if (row1) setPhotosRow1(row1);
+      if (row2) setPhotosRow2(row2);
+    };
+
+    fetchStudentPhotos();
   }, []);
 
   return (
@@ -273,31 +300,27 @@ const LandingPage = () => {
               id="marquee-row-1"
               className="flex whitespace-nowrap gap-6 animate-marquee hover:[animation-play-state:paused]"
             >
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div
-                  key={i}
-                  className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)] hover:shadow-none hover:scale-[1.02]"
-                >
-                  <img
-                    src={`https://picsum.photos/seed/std_row1_${i}/600/800`}
-                    className="w-full h-full object-cover"
-                    alt={`Student Row 1 - ${i}`}
-                  />
+              {photosRow1.length > 0 ? (
+                // Render data asli + duplicate untuk seamless loop
+                [...photosRow1, ...photosRow1].map((student, i) => (
+                  <div
+                    key={i}
+                    className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)] hover:shadow-none hover:scale-[1.02]"
+                  >
+                    <img
+                      src={student.photo_url}
+                      className="w-full h-full object-cover"
+                      alt={student.full_name}
+                      loading="lazy" // Teknik render hanya saat muncul di layar
+                    />
+                  </div>
+                ))
+              ) : (
+                // Placeholder loading jika data belum muncul
+                <div className="h-40 flex items-center px-10 font-black opacity-10 italic uppercase">
+                  Loading_Archive_Row_1...
                 </div>
-              ))}
-              {/* Duplicate for Seamless Loop */}
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div
-                  key={`dup1-${i}`}
-                  className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)]"
-                >
-                  <img
-                    src={`https://picsum.photos/seed/std_row1_${i}/600/800`}
-                    className="w-full h-full object-cover"
-                    alt="Student Duplicate"
-                  />
-                </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -307,31 +330,25 @@ const LandingPage = () => {
               id="marquee-row-2"
               className="flex whitespace-nowrap gap-6 animate-marquee-reverse hover:[animation-play-state:paused]"
             >
-              {[9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
-                <div
-                  key={i}
-                  className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)] hover:shadow-none hover:scale-[1.02]"
-                >
-                  <img
-                    src={`https://picsum.photos/seed/std_row2_${i}/600/800`}
-                    className="w-full h-full object-cover"
-                    alt={`Student Row 2 - ${i}`}
-                  />
+              {photosRow2.length > 0 ? (
+                [...photosRow2, ...photosRow2].map((student, i) => (
+                  <div
+                    key={i}
+                    className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)] hover:shadow-none hover:scale-[1.02]"
+                  >
+                    <img
+                      src={student.photo_url}
+                      className="w-full h-full object-cover"
+                      alt={student.full_name}
+                      loading="lazy"
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="h-40 flex items-center px-10 font-black opacity-10 italic uppercase">
+                  Loading_Archive_Row_2...
                 </div>
-              ))}
-              {/* Duplicate for Seamless Loop */}
-              {[9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
-                <div
-                  key={`dup2-${i}`}
-                  className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)]"
-                >
-                  <img
-                    src={`https://picsum.photos/seed/std_row2_${i}/600/800`}
-                    className="w-full h-full object-cover"
-                    alt="Student Duplicate"
-                  />
-                </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
