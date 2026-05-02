@@ -222,12 +222,12 @@ const LandingPage = () => {
       <section className="my-24 relative h-[50vh] md:h-[65vh] overflow-hidden rounded-[3rem] border-2 border-primary bg-primary">
         <img
           src="https://cdn.edfal.net/s/36/images/1773676626.jpg"
-          className="w-full h-full object-cover grayscale opacity-60 hover:grayscale-0 transition-all duration-1000"
+          className="w-full h-full object-cover grayscales opacity-60 hover:grayscale-0 transition-all duration-1000"
           alt="Kampus Muhiba Banjarnegara"
         />
         <div className="absolute bottom-10 left-10">
           <span className="bg-canvas text-primary px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest border border-primary">
-            LOC: MUHIBA_BANJARNEGARA_HQ
+            LOC: GEDTUTA OF MUHIBA ~ OUR BELOVED HOME
           </span>
         </div>
       </section>
@@ -308,7 +308,11 @@ const LandingPage = () => {
                     className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)] hover:shadow-none hover:scale-[1.02]"
                   >
                     <img
-                      src={student.photo_url}
+                      src={
+                        student.photo_url !== null
+                          ? student.photo_url
+                          : "https://api.dicebear.com/7.x/initials/svg?seed=NamaSiswa"
+                      }
                       className="w-full h-full object-cover"
                       alt={student.full_name}
                       loading="lazy" // Teknik render hanya saat muncul di layar
@@ -337,7 +341,11 @@ const LandingPage = () => {
                     className="inline-block w-64 md:w-80 aspect-[3/4] shrink-0 rounded-[3rem] border-2 border-primary overflow-hidden bg-white transition-all duration-700 shadow-[10px_10px_0px_0px_rgba(26,26,26,0.05)] hover:shadow-none hover:scale-[1.02]"
                   >
                     <img
-                      src={student.photo_url}
+                      src={
+                        student.photo_url
+                          ? student.photo_url
+                          : "https://api.dicebear.com/7.x/initials/svg?seed=NamaSiswa"
+                      }
                       className="w-full h-full object-cover"
                       alt={student.full_name}
                       loading="lazy"
