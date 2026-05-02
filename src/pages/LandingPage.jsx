@@ -376,7 +376,7 @@ const LandingPage = () => {
       {/* THE BRUTAL FOOTER */}
       <footer className="border-t-4 border-primary pt-12 flex flex-col gap-10">
         <div className="flex flex-col md:flex-row justify-between gap-12">
-          <h4 className="text-huge text-slate-200 pointer-events-none opacity-40 uppercase">
+          <h4 className="text-huge text-slate-400 pointer-events-none opacity-40 uppercase">
             MUHIBA.
           </h4>
           <div className="flex flex-col md:text-right gap-2">
