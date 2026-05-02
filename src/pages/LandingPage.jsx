@@ -164,7 +164,7 @@ const LandingPage = () => {
               <span className="inline-block relative">
                 CALLING
                 <motion.div
-                  className="absolute -right-10 md:-right-32 top-2 md:top-4 text-brand-yellow"
+                  className="absolute -right-4 min-md:-right-32 -top-10 min-md:top-2 md:top-4 text-brand-yellow"
                   animate={{ rotate: 360 }}
                   transition={{
                     duration: 10,
@@ -225,7 +225,7 @@ const LandingPage = () => {
           className="w-full h-full object-cover grayscales opacity-60 hover:grayscale-0 transition-all duration-1000"
           alt="Kampus Muhiba Banjarnegara"
         />
-        <div className="absolute bottom-6 min-md:bottom-10 left-6 min-md:left-10">
+        <div className="absolute bottom-6 min-md:bottom-10 left-4 min-md:left-10">
           <span className="bg-canvas text-primary px-6 py-4 rounded-full font-black text-[10px] uppercase tracking-widest border border-primary leading-relaxed inline-block text-center max-w-[280px] md:max-w-none">
             LOC: GEDTUTA OF MUHIBA ~ OUR BELOVED HOME
           </span>
