@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import CheckPage from "./pages/CheckPage";
 import SKLPage from "./pages/SKLPage";
+import PreCheckPage from "./pages/PreCheckPage";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/cek" element={<CheckPage />} />
+          <Route path="/cek-data" element={<PreCheckPage />} />
           <Route path="/print-skl" element={<SKLPage />} />
         </Routes>
       </div>

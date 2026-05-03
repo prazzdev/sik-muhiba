@@ -110,9 +110,9 @@ const LandingPage = () => {
           className="w-10 h-10 md:w-12 md:h-12 pointer-events-auto object-contain"
           alt="Logo Muhiba"
         />
-        <Link to="/cek" className="pointer-events-auto">
+        <Link to="/cek-data" className="pointer-events-auto">
           <button className="bg-primary text-canvas px-5 md:px-8 py-2.5 md:py-3 rounded-full font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-brand-yellow hover:text-primary transition-all border-2 border-primary whitespace-nowrap">
-            CEK KELULUSAN
+            CEK DATA SAYA
           </button>
         </Link>
       </nav>
