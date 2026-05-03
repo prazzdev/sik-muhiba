@@ -169,8 +169,8 @@ const PreCheckPage = () => {
                   Data Tidak Cocok
                 </p>
                 <p className="text-slate-600 text-xs font-medium mt-1">
-                  Kombinasi NISN dan Tanggal Lahir tidak ditemukan. Hubungi
-                  admin sekolah jika ada kesalahan.
+                  Kombinasi NISN dan Tanggal Lahir tidak ditemukan. Hubungi IT
+                  Support sekolah jika ada kesalahan.
                 </p>
               </div>
             </motion.div>
