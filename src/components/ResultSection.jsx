@@ -16,7 +16,6 @@ const ResultSection = ({ data, onBack }) => {
   const [showGrades, setShowGrades] = useState(true);
   const navigate = useNavigate();
 
-  // Fungsi helper untuk memformat tanggal lahir menjadi deskriptif
   const formatBirthDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -27,25 +26,19 @@ const ResultSection = ({ data, onBack }) => {
     }).format(date);
   };
 
-  // Pengelompokan kategori mapel berdasarkan data subjek dari relasi
   const kategoriMapel = [
     { title: "Mata Pelajaran Wajib", key: "wajib", color: "bg-blue-600" },
     { title: "Mata Pelajaran Pilihan", key: "pilihan", color: "bg-purple-600" },
     { title: "Muatan Lokal", key: "mulok", color: "bg-amber-600" },
   ];
 
-  // Fungsi untuk menangani klik tombol cetak
   const handlePrintSKL = () => {
-    // Fungsi navigasi sebelumnya dikomentari:
-    // navigate("/print-skl", { state: { studentData: data } });
-
-    // Tampilan Alert yang lebih bagus menggunakan SweetAlert2
     Swal.fire({
       title: "Akses Belum Dibuka",
       text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
       icon: "info",
       confirmButtonText: "Mengerti",
-      confirmButtonColor: "#1e293b", // Sesuaikan dengan warna primary kamu (slate-900)
+      confirmButtonColor: "#1e293b",
       customClass: {
         popup: "rounded-[2rem]",
         confirmButton:
@@ -54,19 +47,14 @@ const ResultSection = ({ data, onBack }) => {
     });
   };
 
-  // Helper untuk memfilter grades berdasarkan category yang ada di dalam objek subjects
   const getGradesByCategory = (cat) =>
     data.student_grades?.filter((g) => g.subjects?.category === cat) || [];
 
-  // Hitung rata-rata dari seluruh student_grades
-  const allGrades = data.student_grades || [];
-  const average =
-    allGrades.length > 0
-      ? (
-          allGrades.reduce((acc, curr) => acc + Number(curr.score), 0) /
-          allGrades.length
-        ).toFixed(2)
-      : 0;
+  // PERBAIKAN: Gunakan data.average_score langsung dari database, jangan hitung ulang!
+  // Pastikan tetap menampilkan 2 desimal (misal 82.70)
+  const average = data.average_score
+    ? Number(data.average_score).toFixed(2).replace(".", ",")
+    : "0,00";
 
   return (
     <motion.div
@@ -77,7 +65,6 @@ const ResultSection = ({ data, onBack }) => {
       {/* CARD BIODATA & STATUS */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-10 shadow-sm">
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-          {/* PAS FOTO 4x6 */}
           <div className="shrink-0">
             <div className="w-[120px] h-[180px] md:w-[140px] md:h-[210px] bg-slate-100 border-2 border-slate-200 rounded-xl overflow-hidden flex items-center justify-center relative shadow-inner">
               {data.photo_url ? (
@@ -97,7 +84,6 @@ const ResultSection = ({ data, onBack }) => {
             </div>
           </div>
 
-          {/* BIODATA */}
           <div className="flex-1 flex flex-col md:flex-row justify-between w-full gap-6">
             <div className="text-center md:text-left space-y-4">
               <div>
@@ -121,10 +107,15 @@ const ResultSection = ({ data, onBack }) => {
                     {formatBirthDate(data.birth_date)}
                   </span>
                 </p>
+                <p>
+                  KELAS:{" "}
+                  <span className="text-slate-900 font-bold">
+                    {data.class_name}
+                  </span>
+                </p>
               </div>
             </div>
 
-            {/* STATUS BADGE */}
             <div
               className={`px-6 py-6 rounded-2xl border-2 flex flex-col items-center justify-center min-w-[180px] h-fit self-center md:self-start ${
                 data.is_graduated
@@ -152,28 +143,10 @@ const ResultSection = ({ data, onBack }) => {
         </div>
       </div>
 
-      {/* TRANSKRIP NILAI DENGAN TOGGLE */}
+      {/* TRANSKRIP NILAI */}
       <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-        {/* <div className="bg-slate-50 px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <h3 className="font-bold text-slate-800 text-xs uppercase tracking-widest">
-              Transkrip Nilai Akademik
-            </h3>
-            <button
-              onClick={() => setShowGrades(!showGrades)}
-              className="flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-slate-500 hover:text-primary transition-all shadow-sm"
-            >
-              {showGrades ? <EyeOff size={12} /> : <Eye size={12} />}
-              {showGrades ? "Sembunyikan Nilai" : "Tampilkan Nilai"}
-            </button>
-          </div>
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            KLS: {data.class_name} | SIK-MUHIBA OFFICIAL
-          </span>
-        </div>*/}
-
         <div className="p-4 md:p-8 space-y-10">
-          {/* <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait">
             {showGrades ? (
               <motion.div
                 key="visible"
@@ -205,7 +178,8 @@ const ResultSection = ({ data, onBack }) => {
                               {item.subjects?.name}
                             </span>
                             <span className="font-mono font-black text-slate-900 bg-slate-100 px-3 py-1 rounded-md text-sm">
-                              {item.score}
+                              {/* Pastikan skor mapel juga tampil dengan 2 desimal */}
+                              {Number(item.score).toFixed(2).replace(".", ",")}
                             </span>
                           </div>
                         ))}
@@ -252,9 +226,8 @@ const ResultSection = ({ data, onBack }) => {
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>*/}
+          </AnimatePresence>
 
-          {/* ACTION BUTTONS */}
           <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-100">
             <button
               onClick={onBack}
