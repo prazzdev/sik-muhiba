@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Search, Loader2, Hash, Calendar } from "lucide-react";
 
 const CheckForm = ({ onSearch, loading }) => {
-  const [nisn, setNisn] = useState("0078164847");
+  const [nisn, setNisn] = useState("");
   const [birthDate, setBirthDate] = useState("");
 
   const handleSubmit = (e) => {
