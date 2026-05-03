@@ -76,10 +76,10 @@ const SKLPage = () => {
       </div>
 
       {/* DOKUMEN F4 - Area ini yang masuk ke PDF */}
-      <div className="print-container hidden">
+      <div className="print-container">
         <div
           ref={componentRef}
-          className="bg-white mx-auto w-full max-w-[210mm] min-h-[330mm] p-[15mm] shadow-2xl print:shadow-none print:p-0 text-[11pt] relative overflow-hidden text-black !leading-[1.1]"
+          className="bg-white mx-auto w-full max-w-[210mm] min-h-[330mm] p-[15mm] shadow-2xl print:shadow-none print:p-0 text-[11pt] relative overflow-hidden text-black !leading-[1.1] pointer-events-none select-none"
         >
           {/* KOP SEKOLAH */}
           <div className="w-full mb-2 flex justify-center">
