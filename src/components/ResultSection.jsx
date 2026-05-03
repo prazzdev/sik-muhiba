@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Tambahkan useEffect
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert2
+import { supabase } from "../lib/supabase"; // Import supabase untuk cek settings
 import {
   Printer,
   ArrowLeft,
@@ -14,7 +15,24 @@ import {
 
 const ResultSection = ({ data, onBack }) => {
   const [showGrades, setShowGrades] = useState(true);
+  const [isPrintEnabled, setIsPrintEnabled] = useState(false); // State untuk status fitur cetak
   const navigate = useNavigate();
+
+  // Ambil setting dari database saat komponen mount
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data: settings } = await supabase
+        .from("site_settings")
+        .select("is_active")
+        .eq("key", "skl_print_feature")
+        .single();
+
+      if (settings) {
+        setIsPrintEnabled(settings.is_active);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const formatBirthDate = (dateString) => {
     if (!dateString) return "-";
@@ -33,25 +51,28 @@ const ResultSection = ({ data, onBack }) => {
   ];
 
   const handlePrintSKL = () => {
-    Swal.fire({
-      title: "Akses Belum Dibuka",
-      text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
-      icon: "info",
-      confirmButtonText: "Mengerti",
-      confirmButtonColor: "#1e293b",
-      customClass: {
-        popup: "rounded-[2rem]",
-        confirmButton:
-          "rounded-xl px-10 py-3 text-xs uppercase tracking-widest font-black",
-      },
-    });
+    // Cek status fitur cetak
+    if (isPrintEnabled) {
+      navigate("/print-skl", { state: { studentData: data } });
+    } else {
+      Swal.fire({
+        title: "Akses Belum Dibuka",
+        text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
+        icon: "info",
+        confirmButtonText: "Mengerti",
+        confirmButtonColor: "#1e293b",
+        customClass: {
+          popup: "rounded-[2rem]",
+          confirmButton:
+            "rounded-xl px-10 py-3 text-xs uppercase tracking-widest font-black",
+        },
+      });
+    }
   };
 
   const getGradesByCategory = (cat) =>
     data.student_grades?.filter((g) => g.subjects?.category === cat) || [];
 
-  // PERBAIKAN: Gunakan data.average_score langsung dari database, jangan hitung ulang!
-  // Pastikan tetap menampilkan 2 desimal (misal 82.70)
   const average = data.average_score
     ? Number(data.average_score).toFixed(2).replace(".", ",")
     : "0,00";
@@ -178,7 +199,6 @@ const ResultSection = ({ data, onBack }) => {
                               {item.subjects?.name}
                             </span>
                             <span className="font-mono font-black text-slate-900 bg-slate-100 px-3 py-1 rounded-md text-sm">
-                              {/* Pastikan skor mapel juga tampil dengan 2 desimal */}
                               {Number(item.score).toFixed(2).replace(".", ",")}
                             </span>
                           </div>
