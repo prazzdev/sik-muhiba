@@ -86,7 +86,6 @@ const CheckPage = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col lg:flex-row font-sans">
-      {/* LEFT PANEL */}
       <div className="w-full min-h-screen lg:h-auto lg:w-[400px] bg-primary p-8 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden shrink-0">
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-secondary/20 rounded-full blur-[100px]" />
 
