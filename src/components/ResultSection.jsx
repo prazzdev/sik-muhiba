@@ -51,10 +51,37 @@ const ResultSection = ({ data, onBack }) => {
   ];
 
   const handlePrintSKL = () => {
-    // Cek status fitur cetak
-    if (isPrintEnabled) {
+    // 1. Cek apakah fitur cetak sudah diaktifkan oleh admin
+    if (!isPrintEnabled) {
+      Swal.fire({
+        title: "Akses Belum Dibuka",
+        text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
+        icon: "info",
+        confirmButtonText: "Mengerti",
+        confirmButtonColor: "#1e293b",
+        customClass: {
+          popup: "rounded-[2rem]",
+          confirmButton: "rounded-xl px-10 py-3 text-xs uppercase tracking-widest font-black",
+        },
+      });
+      return; // Berhenti di sini jika fitur belum aktif
+    }
+  
+    // 2. Cek apakah siswa sudah lunas (is_paid === true)
+    if (data?.is_paid) {
       navigate("/print-skl", { state: { studentData: data } });
     } else {
+      // Swal.fire({
+      //   title: "Administrasi Belum Lengkap",
+      //   text: "Mohon maaf, Anda belum dapat mengunduh SKL karena administrasi keuangan belum terpenuhi. Silakan hubungi bagian bendahara sekolah.",
+      //   icon: "warning",
+      //   confirmButtonText: "Mengerti",
+      //   confirmButtonColor: "#1e293b",
+      //   customClass: {
+      //     popup: "rounded-[2rem]",
+      //     confirmButton: "rounded-xl px-10 py-3 text-xs uppercase tracking-widest font-black",
+      //   },
+      // });
       Swal.fire({
         title: "Akses Belum Dibuka",
         text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
@@ -69,6 +96,26 @@ const ResultSection = ({ data, onBack }) => {
       });
     }
   };
+
+  // const handlePrintSKL = () => {
+  //   // Cek status fitur cetak
+  //   if (isPrintEnabled) {
+  //     navigate("/print-skl", { state: { studentData: data } });
+  //   } else {
+  //     Swal.fire({
+  //       title: "Akses Belum Dibuka",
+  //       text: "Mohon maaf, Surat Keterangan Lulus (SKL) belum dapat diunduh saat ini. Silakan cek kembali secara berkala.",
+  //       icon: "info",
+  //       confirmButtonText: "Mengerti",
+  //       confirmButtonColor: "#1e293b",
+  //       customClass: {
+  //         popup: "rounded-[2rem]",
+  //         confirmButton:
+  //           "rounded-xl px-10 py-3 text-xs uppercase tracking-widest font-black",
+  //       },
+  //     });
+  //   }
+  // };
 
   const getGradesByCategory = (cat) =>
     data.student_grades?.filter((g) => g.subjects?.category === cat) || [];
